@@ -216,7 +216,7 @@ void PublishQueueExt::stateWaitEvent() {
         }
 
 
-        String pathDat = fileQueue.getPathForFileNum(curFileNum);
+        String pathDat = fileQueue.getPathForFileNum(curFileNum, "dat");
         curEvent.loadData(pathDat);
         if (!curEvent.isValid()) {
             // Probably a corrupted file, discard
