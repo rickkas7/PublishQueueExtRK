@@ -1,0 +1,9 @@
+.vscode
+target
+*.bin
+.DS_Store
+docs/docs.md
+docs/xml
+node_modules
+api.md
+lib
