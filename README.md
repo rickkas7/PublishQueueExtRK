@@ -128,12 +128,48 @@ const char * getDirPath() const
 
 The returned path will not end with a slash.
 
+---
+
+### bool PublishQueueExt::publish(CloudEvent event) 
+
+This is the recommended version to use, which takes a `CloudEvent` that includes the event name and 
+can include typed data, binary data, or structured data.
+
+```
+bool publish(CloudEvent event);
+```
 
 ---
 
+### bool PublishQueueExt::publish(const char * eventName, const Variant &data, ContentType type) 
+
+You can also `Variant` that can include typed data, binary data, or structured data.
+
+```
+bool publish(const char *eventName, const Variant &data);
+```
+
+#### Parameters
+* `eventName` The name of the event (63 character maximum).
+
+* `data` The event data as a `Variant` object reference.
+
+* `type` The `ContentType` of the data
+
+The data is written to a file on the file system before this call returns.
+
+Content Type Constant    MIME Type	               Value
+ContentType::TEXT        text/plain; charset=utf-8  0
+ContentType::JPEG        image/jpeg                 22
+ContentType::PNG         image/png                  23
+ContentType::BINARY      application/octet-stream   42
+ContentType::STRUCTURED                             65001
+
+
 ### bool PublishQueueExt::publish(const char * eventName, const Variant &data) 
 
-This is the recommended version to use, which takes a `Variant` that can include typed data, binary data, or structured data.
+This overload takes a `Variant` but not a `ContentType`. It should only be used when passing
+a `VariantMap` for structured data.
 
 ```
 bool publish(const char *eventName, const Variant &data);
@@ -172,17 +208,18 @@ This function almost always returns true. If you queue more events than fit in t
 Overload for publishing an event.
 
 ```
-bool publish(const char * eventName, const char * data, PublishFlags flags1, PublishFlags flags2)
+bool publish(const char * eventName, const char * data)
 ```
 
 #### Parameters
 * `eventName` The name of the event (63 character maximum).
 
-* `data` The event data (255 bytes maximum, 622 bytes in system firmware 0.8.0-rc.4 and later).
-
+* `data` The event data as UTF-8 text. Up to 1024 bytes depending on the Device OS version and device.
 
 #### Returns
 true if the event was queued or false if it was not.
+
+For larger data and typed data, use the overload that takes a `CloudEvent` or `Variant`.
 
 This function almost always returns true. If you queue more events than fit in the buffer the oldest (sometimes second oldest) is discarded.
 
@@ -226,7 +263,7 @@ bool getPausePublishing() const
 
 ### bool PublishQueueExt::getCanSleep() const 
 
-Determine if it's a good time to go to sleep. Added in version 0.0.3.
+Determine if it's a good time to go to sleep. 
 
 ```
 bool getCanSleep() const

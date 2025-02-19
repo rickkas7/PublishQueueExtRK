@@ -137,6 +137,19 @@ bool PublishQueueExt::publish(const char *eventName, const Variant &data) {
 
 }
 
+bool PublishQueueExt::publish(const char *eventName, const Variant &data, ContentType type) {
+    CloudEvent event;
+
+    event.name(eventName);
+    event.data(data);
+    event.contentType(type);
+
+    return publish(event);
+
+}
+
+
+
 void PublishQueueExt::clearQueues() {
     WITH_LOCK(*this) {
         fileQueue.removeAll(true);

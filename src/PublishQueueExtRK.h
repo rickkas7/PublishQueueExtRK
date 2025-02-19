@@ -147,7 +147,7 @@ public:
 	bool publish(const char *eventName, const char *data);
 
 	/**
-	 * @brief Overload for publishing an event
+	 * @brief Overload for publishing an event from a Variant
 	 *
 	 * @param eventName The name of the event (63 character maximum).
 	 *
@@ -157,8 +157,36 @@ public:
 	 *
 	 * This function almost always returns true. If you queue more events than fit in the buffer the
 	 * oldest (sometimes second oldest) is discarded.
+     * 
+     * In some cases the content type can be inferred, such as when the `Variant` is a `VariantMap`
+     * but normally you will want to use the overload with a `ContentType`.
 	 */
 	bool publish(const char *eventName, const Variant &data);
+
+
+	/**
+	 * @brief Overload for publishing an event with a Variant and ContentType
+	 *
+	 * @param eventName The name of the event (63 character maximum).
+	 *
+	 * @param data Reference to a Variant object holding the data. It is copied by this method.
+     * 
+     * @param type The ContentType of the data
+	 *
+	 * @return true if the event was queued or false if it was not.
+	 *
+	 * This function almost always returns true. If you queue more events than fit in the buffer the
+	 * oldest (sometimes second oldest) is discarded.
+     * 
+     * Content Type Constant    MIME Type	               Value
+     * ContentType::TEXT        text/plain; charset=utf-8  0
+     * ContentType::JPEG        image/jpeg                 22
+     * ContentType::PNG         image/png                  23
+     * ContentType::BINARY      application/octet-stream   42
+     * ContentType::STRUCTURED                             65001
+	 */
+    bool PublishQueueExt::publish(const char *eventName, const Variant &data, ContentType type);
+
 
     /**
      * @brief Empty the file based queue. Any queued events are discarded and the files deleted.
