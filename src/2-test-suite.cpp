@@ -130,14 +130,11 @@ void publishCounter() {
 void publishPaddedCounter(int size) {
 	Log.info("publishing padded counter=%d size=%d", counter, size);
 
-	char buf[256];
-	snprintf(buf, sizeof(buf), "%05d", counter++);
+	size_t bufSize = size + 10;
+	char *buf = new char[bufSize];
+	snprintf(buf, bufSize - 1, "%05d", counter++);
 
 	if (size > 0) {
-		if (size > (int)(sizeof(buf) - 1)) {
-			size = (int)(sizeof(buf) - 1);
-		}
-
 		char c = 'A';
 		for(size_t ii = strlen(buf); ii < (size_t)size; ii++) {
 			buf[ii] = c;
@@ -149,6 +146,8 @@ void publishPaddedCounter(int size) {
 	}
 
 	PublishQueueExt::instance().publish("testEvent", buf);
+
+	delete[] buf;
 }
 
 
