@@ -5,41 +5,16 @@
 // License: MIT
 
 #include "Particle.h"
+
+#ifndef SYSTEM_VERSION_630
+#error "This library requires Device OS 6.3.0 or later"
+#endif
+
+
+#include "Particle.h"
 #include "SequentialFileRK.h" // https://github.com/rickkas7/SequentialFileRK
 
-
 #include <deque>
-
-/**
- * @brief Structure stored before the event data in files on the flash file system
- * 
- * Each file is sequentially numbered and has one event. The contents of the file
- * are this header (8 bytes) followed by the PublishQueueEvent structure, which
- * is variably sized based on the size of the event.    
- */
-struct PublishQueueFileHeader {
-    uint32_t magic;         //!< PublishQueueExt::FILE_MAGIC = 0x31b67663
-    uint8_t version;        //!< PublishQueueExt::FILE_VERSION = 1
-    uint8_t headerSize;     //!< sizeof(PublishQueueFileHeader) = 8
-    uint16_t nameLen;       //!< sizeof(PublishQueueEvent::eventName) = 64
-};
-
-/**
- * @brief Structure to hold an event in RAM or in files
- * 
- * In RAM, this structure is stored in the ramQueue. 
- * 
- * On the flash file system, each file contains one event and consists of the
- * PublishQueueFileHeader above (8 bytes) plus this structure.
- * 
- * Note that the eventData is specified as 1 byte here, but it's actually
- * sized to fit the event data with a null terminator.
- */
-struct PublishQueueEvent {
-    PublishFlags flags; //!< NO_ACK or WITH_ACK. Can use PRIVATE, but that's no longer needed.
-    char eventName[particle::protocol::MAX_EVENT_NAME_LENGTH + 1]; //!< c-string event name (required)
-    char eventData[1]; //!< Variable size event data
-};
 
 /**
  * @brief Class for asynchronous publishing of events
@@ -47,6 +22,17 @@ struct PublishQueueEvent {
  */
 class PublishQueueExt {
 public:
+    /**
+     * @brief This structure is at the end of the publish queue file
+     */
+    struct QueueFileTrailer { // 16 bytes
+        uint32_t magic; //!< kQueueFileTrailerMagic
+        uint32_t dataSize; //!< size of the event data at the beginning of the file
+        uint16_t metaSize; //!< size of the JSON meta data (not null terminated)
+        uint16_t reserved; //!< not used, set to 0
+    };
+    static const uint32_t kQueueFileTrailerMagic = 0x55fcab58;
+
     /**
      * @brief Gets the singleton instance of this class
      * 
@@ -242,15 +228,6 @@ public:
      */
     void unlock() { os_mutex_recursive_unlock(mutex); };
 
-    /**
-     * @brief Magic bytes store at the beginning of event files for validity checking
-     */
-    static const uint32_t FILE_MAGIC = 0x31b67663;
-    
-    /**
-     * @brief Version of the file header for events
-     */
-    static const uint8_t FILE_VERSION = 1;
 
 protected:
     /**
@@ -278,28 +255,6 @@ protected:
      * @brief This class is not copyable
      */
     PublishQueueExt& operator=(const PublishQueueExt&) = delete;
-
-    /**
-     * @brief Allocate a new event structure in RAM
-     * 
-     * The PublishEventQueue structure contains a header and is variably sized for the eventData.
-     * 
-     * May return NULL if eventName or eventData are invalid (too long) or out of memory.
-     * 
-     * You must delete the result from this method when you are done using it. 
-     */
-    PublishQueueEvent *newRamEvent(const char *eventName, const char *eventData, PublishFlags flags);
-
-    /**
-     * @brief Read an event from a sequentially numbered file 
-     * 
-     * @param fileNum The file number to read 
-     * 
-     * May return NULL if file does not exist, or out of memory.
-     * 
-     * You must delete the result from this method when you are done using it. 
-     */
-    PublishQueueEvent *readQueueFile(int fileNum);
 
     /**
      * @brief Callback for BackgroundPublishRK library
@@ -345,16 +300,15 @@ protected:
     os_mutex_recursive_t mutex; //!< mutex for protecting the queue
 
     CloudEvent curEvent; //!< Current event being published
-    int curFileNum = 0; //!< Current file number being published (0 if from RAM queue)
+    int curFileNum = 0; //!< Current file number being published
     unsigned long stateTime = 0; //!< millis() value when entering the state, used for stateWait
     unsigned long durationMs = 0; //!< how long to wait before publishing in milliseconds, used in stateWait
     bool pausePublishing = false; //!< flag to pause publishing (used from automated test)
     bool canSleep = false; //!< returns true if this is a good time to go to sleep
 
     unsigned long waitAfterConnect = 500; //!< time to wait after Particle.connected() before publishing
-    unsigned long waitBetweenPublish = 500; //!< how long to wait in milliseconds between publishes
+    unsigned long waitBetweenPublish = 10; //!< how long to wait in milliseconds between publishes
     unsigned long waitAfterFailure = 30000; //!< how long to wait after failing to publish before trying again
-    unsigned long waitRateLimitCheck = 5000; //!< how often to wait before checking again after rate limiting
 
     std::function<void(bool succeeded, const char *eventName, const char *eventData)> publishCompleteUserCallback = 0; //!< User callback for publish complete
 
