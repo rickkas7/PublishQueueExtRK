@@ -31,7 +31,8 @@ public:
         uint16_t metaSize; //!< size of the JSON meta data (not null terminated)
         uint16_t reserved; //!< not used, set to 0
     };
-    static const uint32_t kQueueFileTrailerMagic = 0x55fcab58;
+
+    static const uint32_t kQueueFileTrailerMagic = 0x55fcab58; //!< Magic bytes stored in the QueueFileTrailer structure
 
     /**
      * @brief Gets the singleton instance of this class
@@ -160,7 +161,7 @@ public:
 	bool publish(const char *eventName, const Variant &data);
 
     /**
-     * @brief Empty both the RAM and file based queues. Any queued events are discarded. 
+     * @brief Empty the file based queue. Any queued events are discarded and the files deleted.
      */
     void clearQueues();
 
@@ -195,8 +196,7 @@ public:
     /**
      * @brief Gets the total number of events queued
      * 
-     * This is the number of events in the RAM-based queue and the file-based
-     * queue. This operation is fast; the file queue length is stored in RAM,
+     * This operation is fast; the file queue length is stored in RAM,
      * so this command does not need to access the file system.
      * 
      * If an event is currently being sent, the result includes this event.
@@ -205,8 +205,6 @@ public:
 
     /**
      * @brief Check the queue limit, discarding events as necessary
-     * 
-     * When the RAM queue exceeds the limit, all events are moved into files. 
      */
     void checkQueueLimits();
     
@@ -257,12 +255,7 @@ protected:
     PublishQueueExt& operator=(const PublishQueueExt&) = delete;
 
     /**
-     * @brief Callback for BackgroundPublishRK library
-     */
-    void publishCompleteCallback(bool succeeded, const char *eventName, const char *eventData);
-
-    /**
-     * @brief Delete the current event in curFileNum in both RAM queue and the backing file
+     * @brief Delete the current event in curFileNum
      */
     void deleteCurEvent();
 

@@ -180,13 +180,6 @@ size_t PublishQueueExt::getNumEvents() {
     return result;
 }
 
-void PublishQueueExt::publishCompleteCallback(bool succeeded, const char *eventName, const char *eventData) {
-    if (publishCompleteUserCallback) {
-        publishCompleteUserCallback(succeeded, eventName, eventData);
-    }
-}
-
-
 void PublishQueueExt::stateConnectWait() {
     canSleep = (pausePublishing || getNumEvents() == 0);
 
