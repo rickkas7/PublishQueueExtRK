@@ -11,6 +11,12 @@ This library can only be used Device OS 6.3.0 and later, but offers several bene
 - Increased event data size, up to 16384 bytes
 - Binary and structured values in event data
 
+You can also find [full browseable API documentation](https://rickkas7.github.io/PublishQueueExtRK/index.html) at the link
+or in the docs directory of this repository.
+
+- Repository: https://github.com/rickkas7/PublishQueueExtRK
+- License: MIT
+
 
 ## Usage
 
