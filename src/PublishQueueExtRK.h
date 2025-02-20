@@ -185,7 +185,7 @@ public:
      * ContentType::BINARY      application/octet-stream   42
      * ContentType::STRUCTURED                             65001
 	 */
-    bool PublishQueueExt::publish(const char *eventName, const Variant &data, ContentType type);
+    bool publish(const char *eventName, const Variant &data, ContentType type);
 
 
     /**

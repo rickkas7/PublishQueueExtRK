@@ -1,17 +1,15 @@
-# PublishQueueExt
+# PublishQueueExtRK
 
-Queued publish for Particle devices using typed and extended publish
+**Queued publish for Particle devices using typed and extended publish**
 
-This is version of [PublishQueuePosixRK](https://github.com/rickkas7/PublishQueuePosixRK) that is designed for
+This is version of [PublishQueuePosixRK](https://github.com/rickkas7/PublishQueuePosixRK/) that is designed for
 use with [typed and extended publish](https://docs.particle.io/reference/device-os/typed-publish/) in Device OS 6.3.0 and later.
 
-This library can only be used on newer versions of Device OS, but offers several benefits:
+This library can only be used Device OS 6.3.0 and later, but offers several benefits:
 
-- Increased rate limit, no longer limited to 1 publish per second
+- Increased publish rate limit, no longer limited to 1 publish per second
 - Increased event data size, up to 16384 bytes
-- Binary values in event data
-
-
+- Binary and structured values in event data
 
 
 ## Usage
@@ -46,7 +44,7 @@ PublishQueueExt::instance().withFileQueueSize(50);
 
 ## Dependencies
 
-This library depends on two additional libraries:
+This library depends on an additional library:
 
 - [SequentialFileRK](https://github.com/rickkas7/SequentialFileRK) manages the queue on the flash file system
 
@@ -158,13 +156,14 @@ bool publish(const char *eventName, const Variant &data);
 
 The data is written to a file on the file system before this call returns.
 
-Content Type Constant    MIME Type	               Value
+```
+Content Type Constant    MIME Type	                Value
 ContentType::TEXT        text/plain; charset=utf-8  0
 ContentType::JPEG        image/jpeg                 22
 ContentType::PNG         image/png                  23
 ContentType::BINARY      application/octet-stream   42
 ContentType::STRUCTURED                             65001
-
+```
 
 ### bool PublishQueueExt::publish(const char * eventName, const Variant &data) 
 

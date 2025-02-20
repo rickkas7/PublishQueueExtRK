@@ -1,5 +1,4 @@
 #include "PublishQueueExtRK.h"
-#include "FileHelperRK.h" // https://github.com/rickkas7/FileHelperRK
 
 #include <dirent.h>
 #include <fcntl.h>
