@@ -326,6 +326,10 @@ void unlock()
 
 ## Version History
 
+### 0.0.2 (2025-03-24)
+
+- Moved 2-test-suite.cpp into the example directory. It as accidentally in the src directory.
+
 ### 0.0.1 (2025-02-19)
 
 - Initial version
