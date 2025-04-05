@@ -21,7 +21,8 @@ enum {
 	TEST_RESUME_PUBLISING, // 5 resume publishing
 	TEST_PUBLISH_OFFLINE_RESET, // 6 go offline, publish some events, reset device, number is param0, optional size in param2
     TEST_CLEAR_QUEUES, // 7 clear RAM and file-based queues
-    TEST_SET_FILE_QUEUE_LEN // 8 set file queue length (param0 = length)
+    TEST_SET_FILE_QUEUE_LEN, // 8 set file queue length (param0 = length)
+	TEST_VARIANT_BINARY // 9 publish binary variant for TEST_PUBLISH_FAST, TEST_PUBLISH_OFFLINE, TEST_PUBLISH_OFFLINE_RESET
 };
 
 // Example:
@@ -37,6 +38,7 @@ int testNum;
 int intParam[MAX_PARAM];
 String stringParam[MAX_PARAM];
 size_t numParam;
+ContentType contentType = ContentType::TEXT;
 
 int testHandler(String cmd);
 void publishCounter();
@@ -128,7 +130,6 @@ void publishCounter() {
 }
 
 void publishPaddedCounter(int size) {
-	Log.info("publishing padded counter=%d size=%d", counter, size);
 
 	size_t bufSize = size + 10;
 	char *buf = new char[bufSize];
@@ -145,7 +146,15 @@ void publishPaddedCounter(int size) {
 		buf[size] = 0;
 	}
 
-	PublishQueueExt::instance().publish("testEvent", buf);
+	if (contentType == ContentType::TEXT) {
+		Log.info("publishing padded counter=%d size=%d", counter, size);
+		PublishQueueExt::instance().publish("testEvent", buf);
+	}
+	else {
+		Log.info("publishing padded counter=%d size=%d contentType=%d", counter, size, (int)contentType);
+		Variant v(buf, bufSize);
+		PublishQueueExt::instance().publish("testEvent", v, contentType);
+	}
 
 	delete[] buf;
 }
@@ -192,7 +201,13 @@ int testHandler(String cmd) {
         PublishQueueExt::instance().checkQueueLimits();
         break;
 
+	case TEST_VARIANT_BINARY:
+		Log.info("set binary publish mode");
+		contentType = ContentType::BINARY;
+		break;
+		
 	default:
+		Log.info("test %d", tempTestNum);
 		testNum = tempTestNum;
 		break;
 	}
