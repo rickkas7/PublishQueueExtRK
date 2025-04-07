@@ -326,6 +326,10 @@ void unlock()
 
 ## Version History
 
+### 0.0.3 (2025-04-07)
+
+- Fixed a bug where if a queued file failed to publish (such as because of a connectivity issue), the file in the queue would be corrupted and would be discarded instead of retransmitted later.
+
 ### 0.0.2 (2025-03-24)
 
 - Moved 2-test-suite.cpp into the example directory. It as accidentally in the src directory.

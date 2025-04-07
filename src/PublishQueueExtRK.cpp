@@ -137,14 +137,34 @@ bool PublishQueueExt::publish(const char *eventName, const Variant &data) {
 }
 
 bool PublishQueueExt::publish(const char *eventName, const Variant &data, ContentType type) {
+
+    // Possibly add safety checks in future version
+    /*
+    if (data.isArray() || data.isMap()) {
+        if (type != ContentType::STRUCTURED) {
+            _log.error("cannot encode array or map as content type %d", (int)type);
+            return false;
+        }
+    }
+    else
+    if (type == ContentType::TEXT) {
+        _log.error("cannot use content type TEXT with Variant");
+        return false;
+    } 
+    */   
+
     CloudEvent event;
 
     event.name(eventName);
     event.data(data);
     event.contentType(type);
 
-    return publish(event);
+    bool bResult = publish(event);
+    if (bResult) {
+        checkQueueLimits();
+    }
 
+    return bResult;
 }
 
 
@@ -272,9 +292,10 @@ void PublishQueueExt::stateWaitEvent() {
             }
         }
         Variant meta;
+        char *metaJson = nullptr;
 
         if (isValid) {
-            char *metaJson = new char[trailer.metaSize + 1];
+            metaJson = new char[trailer.metaSize + 1];
             if (metaJson) {
                 lseek(fd, trailer.dataSize, SEEK_SET);
 
@@ -282,8 +303,6 @@ void PublishQueueExt::stateWaitEvent() {
 
                 metaJson[trailer.metaSize] = 0;
                 meta = Variant::fromJSON(metaJson);
-
-                delete[] metaJson;
             }
             else {
                 _log.info("failed to allocate meta metaSize=%u %s", trailer.metaSize, queueFilePath.c_str());
@@ -304,6 +323,24 @@ void PublishQueueExt::stateWaitEvent() {
         if (isValid) {
             curEvent.loadData(queueFilePath.c_str());
         }
+        if (isValid) {
+            // Put the meta and trailer back in case the file is not sent
+            fd = open(queueFilePath.c_str(), O_RDWR);
+            if (fd != -1) {
+                lseek(fd, trailer.dataSize, SEEK_SET);
+                write(fd, metaJson, trailer.metaSize);
+                write(fd, &trailer, sizeof(trailer));    
+                close(fd);
+                fd = -1;
+            }
+
+        }
+        if (metaJson) {
+            delete[] metaJson;
+            metaJson = nullptr;
+        }
+
+
         if (isValid) {
             curEvent.name(meta.get("name").asString().c_str());
             if (meta.has("content-type")) {
