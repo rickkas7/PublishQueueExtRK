@@ -326,6 +326,10 @@ void unlock()
 
 ## Version History
 
+### 0.0.4 (2025-04-08)
+
+- Fixed a bug where queue cleanup did not work properly and could also leave corrupted files in the queue if you exceeded the file queue size.
+
 ### 0.0.3 (2025-04-07)
 
 - Fixed a bug where if a queued file failed to publish (such as because of a connectivity issue), the file in the queue would be corrupted and would be discarded instead of retransmitted later.

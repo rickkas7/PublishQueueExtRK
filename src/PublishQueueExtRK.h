@@ -316,6 +316,12 @@ protected:
      */
     SequentialFile fileQueue;
 
+    /**
+     * @brief File used for temporary data
+     */
+    String tempFileName = "temp.dat";
+    String tempFilePath; //!< Fill path name to tempFileName
+
     size_t fileQueueSize = 100; //!< size of the queue on the flash file system
 
     os_mutex_recursive_t mutex; //!< mutex for protecting the queue

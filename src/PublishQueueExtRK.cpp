@@ -52,6 +52,14 @@ void PublishQueueExt::loop() {
 bool PublishQueueExt::publish(CloudEvent event) {
     bool bResult = false;
     
+    if (fileQueueSize <= 1 && fileQueue.getQueueLen() > 0) {
+        // If queue length is 1 and there is an item in the queue, can't add another 
+        // because the first file can't be deleted because it might be in the process
+        // of being sent.
+        return false;
+    }
+
+
     int fileNum = fileQueue.reserveFile();
 
 
@@ -102,6 +110,9 @@ bool PublishQueueExt::publish(CloudEvent event) {
     }
     else {
         _log.error("error reserving file in queue");
+    }
+    if (bResult) {
+        checkQueueLimits();
     }
 
     return bResult;
@@ -159,12 +170,7 @@ bool PublishQueueExt::publish(const char *eventName, const Variant &data, Conten
     event.data(data);
     event.contentType(type);
 
-    bool bResult = publish(event);
-    if (bResult) {
-        checkQueueLimits();
-    }
-
-    return bResult;
+    return publish(event);
 }
 
 
@@ -193,10 +199,13 @@ void PublishQueueExt::setPausePublishing(bool value) {
 void PublishQueueExt::checkQueueLimits() {
     WITH_LOCK(*this) {
         while(fileQueue.getQueueLen() > (int)fileQueueSize) {
-            int fileNum = fileQueue.getFileFromQueue(true);
+            int fileNum = fileQueue.removeSecondFileInQueue();
             if (fileNum) {
                 fileQueue.removeFileNum(fileNum, false);
                 _log.info("discarded event %d", fileNum);
+            }
+            else {
+                break;
             }
         }
     }
@@ -252,6 +261,8 @@ void PublishQueueExt::stateWaitEvent() {
         }
 
         curEvent.clear();
+
+        tempFilePath = String(fileQueue.getDirPath()) + String("/") + tempFileName;
 
         String queueFilePath = fileQueue.getPathForFileNum(curFileNum);
 
@@ -311,8 +322,41 @@ void PublishQueueExt::stateWaitEvent() {
         }
 
         if (isValid) {
-            lseek(fd, 0, SEEK_SET);
-            ftruncate(fd, trailer.dataSize);
+            // Copy event data to temporary file
+            int tempFd = open(tempFilePath, O_RDWR | O_CREAT | O_TRUNC);
+            if (tempFd != -1) {
+                size_t copyBufSize = 512;
+                uint8_t *copyBuf = new uint8_t[copyBufSize];
+                if (copyBuf) {
+                    lseek(fd, 0, SEEK_SET);
+
+                    for(size_t offset = 0; offset < fileSize; offset += copyBufSize) {
+                        size_t count = fileSize - offset;
+                        if (count > copyBufSize) {
+                            count = copyBufSize;
+                        }
+                        read(fd, copyBuf, count);
+                        int err = write(tempFd, copyBuf, count);
+                        if (err < 0) {
+                            _log.info("failed to write copy");
+                            isValid = false;            
+                            break;
+                        }
+                    }
+
+                    delete[] copyBuf;
+                }
+                else {
+                    _log.info("failed to allocate copy buffer");
+                    isValid = false;    
+                }
+                
+                close(tempFd);
+            }
+            else {
+                _log.info("failed to open temp file %s", tempFilePath.c_str());
+                isValid = false;
+            }
         }
         
         if (fd != -1) {
@@ -321,20 +365,9 @@ void PublishQueueExt::stateWaitEvent() {
         }
 
         if (isValid) {
-            curEvent.loadData(queueFilePath.c_str());
+            curEvent.loadData(tempFilePath.c_str());
         }
-        if (isValid) {
-            // Put the meta and trailer back in case the file is not sent
-            fd = open(queueFilePath.c_str(), O_RDWR);
-            if (fd != -1) {
-                lseek(fd, trailer.dataSize, SEEK_SET);
-                write(fd, metaJson, trailer.metaSize);
-                write(fd, &trailer, sizeof(trailer));    
-                close(fd);
-                fd = -1;
-            }
 
-        }
         if (metaJson) {
             delete[] metaJson;
             metaJson = nullptr;
