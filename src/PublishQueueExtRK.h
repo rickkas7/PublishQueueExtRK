@@ -87,18 +87,18 @@ public:
      * 
      * The callback has this prototype and can be a function or a C++11 lambda, which allows the callback to be a class method.
      * 
-     * void callback(bool succeeded, const char *eventName, const char *eventData)
+     * void callback(const CloudEvent &event)
      * 
      * The parameters are:
-     * - succeeded: true if the publish succeeded or false if faled
-     * - eventName: The original event name that was published (a copy of it, not the original pointer)
-     * - eventData: The original event data
+     * - event: The CloudEvent object that was just sent
+     * 
+     * You can determine success/failure, examine the event. or the event data, by using methods of the CloudEvent class
      * 
      * Note that this callback will be called from the background thread used for publishing. You should not
      * perform any lengthy operations and you should avoid using large amounts of stack space during this
      * callback. 
      */
-    PublishQueueExt &withPublishCompleteUserCallback(std::function<void(bool succeeded, const char *eventName, const char *eventData)> cb) { publishCompleteUserCallback = cb; return *this; };
+    PublishQueueExt &withPublishCompleteUserCallback(std::function<void(const CloudEvent &event)> cb) { publishCompleteUserCallback = cb; return *this; };
 
 
     /**
@@ -337,7 +337,7 @@ protected:
     unsigned long waitBetweenPublish = 10; //!< how long to wait in milliseconds between publishes
     unsigned long waitAfterFailure = 30000; //!< how long to wait after failing to publish before trying again
 
-    std::function<void(bool succeeded, const char *eventName, const char *eventData)> publishCompleteUserCallback = 0; //!< User callback for publish complete
+    std::function<void(const CloudEvent &event)> publishCompleteUserCallback = 0; //!< User callback for publish complete
 
     std::function<void(PublishQueueExt&)> stateHandler = 0; //!< state handler (stateConnectWait, stateWait, etc).
 

@@ -326,6 +326,12 @@ void unlock()
 
 ## Version History
 
+### 0.0.5 (2025-04-11)
+
+- Added support for withPublishCompleteUserCallback(). It was not previously implemented, though the call to set it
+was left over from PublishQueuePosixRK. The new prototype only has a CloudEvent object you can use the determine
+success or failure, the event name, or the event data.
+
 ### 0.0.4 (2025-04-08)
 
 - Fixed a bug where queue cleanup did not work properly and could also leave corrupted files in the queue if you exceeded the file queue size.

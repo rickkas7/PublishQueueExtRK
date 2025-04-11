@@ -434,6 +434,9 @@ void PublishQueueExt::statePublishWait() {
         return;
     }
 
+    if (publishCompleteUserCallback) {
+        publishCompleteUserCallback(curEvent);
+    }
 
     if (!curEvent.isValid()) {
         _log.trace("publish failed invalid %d (discarding)", curFileNum);
