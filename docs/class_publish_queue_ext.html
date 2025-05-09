@@ -109,9 +109,9 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><b>getFileQueueSize</b
 <tr class="memitem:af469e16e7fdd0d552b944d2418aedead" id="r_af469e16e7fdd0d552b944d2418aedead"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af469e16e7fdd0d552b944d2418aedead">getDirPath</a> () const</td></tr>
 <tr class="memdesc:af469e16e7fdd0d552b944d2418aedead"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the directory path set using <a class="el" href="#a5fd49955e24427561875e23305a6aa9c" title="Sets the directory to use as the queue directory. This is required!">withDirPath()</a>  <br /></td></tr>
 <tr class="separator:af469e16e7fdd0d552b944d2418aedead"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4420204297a8cb5f9cc7a4b8688882d7" id="r_a4420204297a8cb5f9cc7a4b8688882d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4420204297a8cb5f9cc7a4b8688882d7">withPublishCompleteUserCallback</a> (std::function&lt; void(bool succeeded, const char *eventName, const char *eventData)&gt; cb)</td></tr>
-<tr class="memdesc:a4420204297a8cb5f9cc7a4b8688882d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a callback function to call with publish is complete.  <br /></td></tr>
-<tr class="separator:a4420204297a8cb5f9cc7a4b8688882d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a076c74a202967ed8d7560508373e7873" id="r_a076c74a202967ed8d7560508373e7873"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a076c74a202967ed8d7560508373e7873">withPublishCompleteUserCallback</a> (std::function&lt; void(const CloudEvent &amp;event)&gt; cb)</td></tr>
+<tr class="memdesc:a076c74a202967ed8d7560508373e7873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a callback function to call with publish is complete.  <br /></td></tr>
+<tr class="separator:a076c74a202967ed8d7560508373e7873"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff151cce8ada685b1e2d34e24d83906b" id="r_aff151cce8ada685b1e2d34e24d83906b"><td class="memItemLeft" align="right" valign="top"><a id="aff151cce8ada685b1e2d34e24d83906b" name="aff151cce8ada685b1e2d34e24d83906b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> ()</td></tr>
 <tr class="memdesc:aff151cce8ada685b1e2d34e24d83906b"><td class="mdescLeft">&#160;</td><td class="mdescRight">You must call this from <a class="el" href="#aff151cce8ada685b1e2d34e24d83906b" title="You must call this from setup() to initialize this library.">setup()</a> to initialize this library. <br /></td></tr>
@@ -217,6 +217,14 @@ Protected Attributes</h2></td></tr>
 SequentialFile&#160;</td><td class="memItemRight" valign="bottom"><b>fileQueue</b></td></tr>
 <tr class="memdesc:aeeb20b2e01d4760cebaf62efc5391f0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">SequentialFileRK library object for maintaining the queue of files on the POSIX file system. <br /></td></tr>
 <tr class="separator:aeeb20b2e01d4760cebaf62efc5391f0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d4a0dd857a75d825f77522ff5b61571" id="r_a0d4a0dd857a75d825f77522ff5b61571"><td class="memItemLeft" align="right" valign="top"><a id="a0d4a0dd857a75d825f77522ff5b61571" name="a0d4a0dd857a75d825f77522ff5b61571"></a>
+String&#160;</td><td class="memItemRight" valign="bottom"><b>tempFileName</b> = &quot;temp.dat&quot;</td></tr>
+<tr class="memdesc:a0d4a0dd857a75d825f77522ff5b61571"><td class="mdescLeft">&#160;</td><td class="mdescRight">File used for temporary data. <br /></td></tr>
+<tr class="separator:a0d4a0dd857a75d825f77522ff5b61571"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f88cb51a5f41b9421840fa5a31bf2da" id="r_a8f88cb51a5f41b9421840fa5a31bf2da"><td class="memItemLeft" align="right" valign="top"><a id="a8f88cb51a5f41b9421840fa5a31bf2da" name="a8f88cb51a5f41b9421840fa5a31bf2da"></a>
+String&#160;</td><td class="memItemRight" valign="bottom"><b>tempFilePath</b></td></tr>
+<tr class="memdesc:a8f88cb51a5f41b9421840fa5a31bf2da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill path name to tempFileName. <br /></td></tr>
+<tr class="separator:a8f88cb51a5f41b9421840fa5a31bf2da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac93fca15049de23826db33c3abde4fbc" id="r_ac93fca15049de23826db33c3abde4fbc"><td class="memItemLeft" align="right" valign="top"><a id="ac93fca15049de23826db33c3abde4fbc" name="ac93fca15049de23826db33c3abde4fbc"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>fileQueueSize</b> = 100</td></tr>
 <tr class="memdesc:ac93fca15049de23826db33c3abde4fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of the queue on the flash file system <br /></td></tr>
@@ -261,10 +269,10 @@ unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>waitBetweenP
 unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>waitAfterFailure</b> = 30000</td></tr>
 <tr class="memdesc:a00f45886f0bbd0212df5113d2188b395"><td class="mdescLeft">&#160;</td><td class="mdescRight">how long to wait after failing to publish before trying again <br /></td></tr>
 <tr class="separator:a00f45886f0bbd0212df5113d2188b395"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9878e232a0cde8ace6d58efdb1515153" id="r_a9878e232a0cde8ace6d58efdb1515153"><td class="memItemLeft" align="right" valign="top"><a id="a9878e232a0cde8ace6d58efdb1515153" name="a9878e232a0cde8ace6d58efdb1515153"></a>
-std::function&lt; void(bool succeeded, const char *eventName, const char *eventData)&#160;</td><td class="memItemRight" valign="bottom"><b>publishCompleteUserCallback</b> ) = 0</td></tr>
-<tr class="memdesc:a9878e232a0cde8ace6d58efdb1515153"><td class="mdescLeft">&#160;</td><td class="mdescRight">User callback for publish complete. <br /></td></tr>
-<tr class="separator:a9878e232a0cde8ace6d58efdb1515153"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60cc98efedc05f404ab034d2fb226cf0" id="r_a60cc98efedc05f404ab034d2fb226cf0"><td class="memItemLeft" align="right" valign="top"><a id="a60cc98efedc05f404ab034d2fb226cf0" name="a60cc98efedc05f404ab034d2fb226cf0"></a>
+std::function&lt; void(const CloudEvent &amp;event)&#160;</td><td class="memItemRight" valign="bottom"><b>publishCompleteUserCallback</b> ) = 0</td></tr>
+<tr class="memdesc:a60cc98efedc05f404ab034d2fb226cf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">User callback for publish complete. <br /></td></tr>
+<tr class="separator:a60cc98efedc05f404ab034d2fb226cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2099e8ec9290cbe6391fb82056b16d8b" id="r_a2099e8ec9290cbe6391fb82056b16d8b"><td class="memItemLeft" align="right" valign="top"><a id="a2099e8ec9290cbe6391fb82056b16d8b" name="a2099e8ec9290cbe6391fb82056b16d8b"></a>
 std::function&lt; void(<a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp;)&#160;</td><td class="memItemRight" valign="bottom"><b>stateHandler</b> ) = 0</td></tr>
 <tr class="memdesc:a2099e8ec9290cbe6391fb82056b16d8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">state handler (stateConnectWait, stateWait, etc). <br /></td></tr>
@@ -804,8 +812,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a4420204297a8cb5f9cc7a4b8688882d7" name="a4420204297a8cb5f9cc7a4b8688882d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4420204297a8cb5f9cc7a4b8688882d7">&#9670;&#160;</a></span>withPublishCompleteUserCallback()</h2>
+<a id="a076c74a202967ed8d7560508373e7873" name="a076c74a202967ed8d7560508373e7873"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a076c74a202967ed8d7560508373e7873">&#9670;&#160;</a></span>withPublishCompleteUserCallback()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -816,7 +824,7 @@ false </dd></dl>
         <tr>
           <td class="memname"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp; PublishQueueExt::withPublishCompleteUserCallback </td>
           <td>(</td>
-          <td class="paramtype">std::function&lt; void(bool succeeded, const char *eventName, const char *eventData)&gt;</td>          <td class="paramname"><span class="paramname"><em>cb</em></span></td><td>)</td>
+          <td class="paramtype">std::function&lt; void(const CloudEvent &amp;event)&gt;</td>          <td class="paramname"><span class="paramname"><em>cb</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -836,12 +844,11 @@ false </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_publish_queue_ext.html" title="Class for asynchronous publishing of events.">PublishQueueExt</a>&amp;</dd></dl>
 <p>The callback has this prototype and can be a function or a C++11 lambda, which allows the callback to be a class method.</p>
-<p>void callback(bool succeeded, const char *eventName, const char *eventData)</p>
+<p>void callback(const CloudEvent &amp;event)</p>
 <p>The parameters are:</p><ul>
-<li>succeeded: true if the publish succeeded or false if faled</li>
-<li>eventName: The original event name that was published (a copy of it, not the original pointer)</li>
-<li>eventData: The original event data</li>
+<li>event: The CloudEvent object that was just sent</li>
 </ul>
+<p>You can determine success/failure, examine the event. or the event data, by using methods of the CloudEvent class</p>
 <p>Note that this callback will be called from the background thread used for publishing. You should not perform any lengthy operations and you should avoid using large amounts of stack space during this callback. </p>
 
 </div>

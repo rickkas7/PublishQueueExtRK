@@ -41,8 +41,8 @@ PublishQueueExt::instance().publish("testEvent", buf, PRIVATE | WITH_ACK);
 ### File queue
 
 The default maximum file queue size is 100, which corresponds to 100 events. Each event takes is stored in 
-a single file. In many cases, an event will fit in a single 512-byte flash sector, but it could require two,
-or three, for a full 1024 byte event with the overhead. A full 16384 byte event could take 33 sectors.
+a single file. In many cases, an event will fit in a single 4096-byte flash sector, but it could require more. 
+A full 16K event could take 5 sectors.
 
 ```cpp
 PublishQueueExt::instance().withFileQueueSize(50);
@@ -325,6 +325,10 @@ void unlock()
 ```
 
 ## Version History
+
+### 0.0.6 (2025-05-09)
+
+- Corrected sector size (is 4096 bytes not 512).
 
 ### 0.0.5 (2025-04-11)
 

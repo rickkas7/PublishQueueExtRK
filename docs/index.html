@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>PublishQueueExtRK: PublishQueueExt</title>
+<title>PublishQueueExtRK: PublishQueueExtRK</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,32 +71,37 @@ $(function() {
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title"><a class="el" href="class_publish_queue_ext.html" title="Class for asynchronous publishing of events.">PublishQueueExt</a> </div></div>
+  <div class="headertitle"><div class="title">PublishQueueExtRK </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a> Queued publish for Particle devices using typed and extended publish</p>
-<p>This is version of <a href="https://github.com/rickkas7/PublishQueuePosixRK">PublishQueuePosixRK</a> that is designed for use with <a href="https://docs.particle.io/reference/device-os/typed-publish/">typed and extended publish</a> in Device OS 6.3.0 and later.</p>
-<p>This library can only be used on newer versions of Device OS, but offers several benefits:</p>
+<div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a> <b>Queued publish for Particle devices using typed and extended publish</b></p>
+<p>This is version of <a href="https://github.com/rickkas7/PublishQueuePosixRK/">PublishQueuePosixRK</a> that is designed for use with <a href="https://docs.particle.io/reference/device-os/typed-publish/">typed and extended publish</a> in Device OS 6.3.0 and later.</p>
+<p>This library can only be used Device OS 6.3.0 and later, but offers several benefits:</p>
 <ul>
-<li>Increased rate limit, no longer limited to 1 publish per second</li>
+<li>Increased publish rate limit, no longer limited to 1 publish per second</li>
 <li>Increased event data size, up to 16384 bytes</li>
-<li>Binary values in event data</li>
+<li>Binary and structured values in event data</li>
+</ul>
+<p>You can also find <a href="https://rickkas7.github.io/PublishQueueExtRK/index.html">full browseable API documentation</a> at the link or in the docs directory of this repository.</p>
+<ul>
+<li>Repository: <a href="https://github.com/rickkas7/PublishQueueExtRK">https://github.com/rickkas7/PublishQueueExtRK</a></li>
+<li>License: MIT</li>
 </ul>
 <h1>Usage</h1>
 <p>In many cases, you simply call this from setup:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="class_publish_queue_ext.html#a7be22f9aadeb823f0e245d341ac89622">PublishQueueExt::instance</a>().<a class="code hl_function" href="class_publish_queue_ext.html#aff151cce8ada685b1e2d34e24d83906b">setup</a>();</div>
-<div class="ttc" id="aclass_publish_queue_ext_html_a7be22f9aadeb823f0e245d341ac89622"><div class="ttname"><a href="class_publish_queue_ext.html#a7be22f9aadeb823f0e245d341ac89622">PublishQueueExt::instance</a></div><div class="ttdeci">static PublishQueueExt &amp; instance()</div><div class="ttdoc">Gets the singleton instance of this class.</div><div class="ttdef"><b>Definition</b> PublishQueueExtRK.cpp:13</div></div>
-<div class="ttc" id="aclass_publish_queue_ext_html_aff151cce8ada685b1e2d34e24d83906b"><div class="ttname"><a href="class_publish_queue_ext.html#aff151cce8ada685b1e2d34e24d83906b">PublishQueueExt::setup</a></div><div class="ttdeci">void setup()</div><div class="ttdoc">You must call this from setup() to initialize this library.</div><div class="ttdef"><b>Definition</b> PublishQueueExtRK.cpp:30</div></div>
+<div class="ttc" id="aclass_publish_queue_ext_html_a7be22f9aadeb823f0e245d341ac89622"><div class="ttname"><a href="class_publish_queue_ext.html#a7be22f9aadeb823f0e245d341ac89622">PublishQueueExt::instance</a></div><div class="ttdeci">static PublishQueueExt &amp; instance()</div><div class="ttdoc">Gets the singleton instance of this class.</div><div class="ttdef"><b>Definition</b> PublishQueueExtRK.cpp:12</div></div>
+<div class="ttc" id="aclass_publish_queue_ext_html_aff151cce8ada685b1e2d34e24d83906b"><div class="ttname"><a href="class_publish_queue_ext.html#aff151cce8ada685b1e2d34e24d83906b">PublishQueueExt::setup</a></div><div class="ttdeci">void setup()</div><div class="ttdoc">You must call this from setup() to initialize this library.</div><div class="ttdef"><b>Definition</b> PublishQueueExtRK.cpp:29</div></div>
 </div><!-- fragment --><p>And this from loop:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="class_publish_queue_ext.html#a7be22f9aadeb823f0e245d341ac89622">PublishQueueExt::instance</a>().<a class="code hl_function" href="class_publish_queue_ext.html#aff151cce8ada685b1e2d34e24d83906b">setup</a>();</div>
 </div><!-- fragment --><p>To publish you do something like this:</p>
 <div class="fragment"><div class="line">PublishQueueExt::instance().publish(&quot;testEvent&quot;, buf, PRIVATE | WITH_ACK);</div>
 </div><!-- fragment --><h2>File queue</h2>
-<p>The default maximum file queue size is 100, which corresponds to 100 events. Each event takes is stored in a single file. In many cases, an event will fit in a single 512-byte flash sector, but it could require two, or three, for a full 1024 byte event with the overhead. A full 16384 byte event could take 33 sectors.</p>
+<p>The default maximum file queue size is 100, which corresponds to 100 events. Each event takes is stored in a single file. In many cases, an event will fit in a single 4096-byte flash sector, but it could require more. A full 16K event could take 5 sectors.</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="class_publish_queue_ext.html#a7be22f9aadeb823f0e245d341ac89622">PublishQueueExt::instance</a>().<a class="code hl_function" href="class_publish_queue_ext.html#a45c6e19557266a4a33ab51ad5d2a80d0">withFileQueueSize</a>(50);</div>
-<div class="ttc" id="aclass_publish_queue_ext_html_a45c6e19557266a4a33ab51ad5d2a80d0"><div class="ttname"><a href="class_publish_queue_ext.html#a45c6e19557266a4a33ab51ad5d2a80d0">PublishQueueExt::withFileQueueSize</a></div><div class="ttdeci">PublishQueueExt &amp; withFileQueueSize(size_t size)</div><div class="ttdoc">Sets the file-based queue size (default is 100)</div><div class="ttdef"><b>Definition</b> PublishQueueExtRK.cpp:20</div></div>
+<div class="ttc" id="aclass_publish_queue_ext_html_a45c6e19557266a4a33ab51ad5d2a80d0"><div class="ttname"><a href="class_publish_queue_ext.html#a45c6e19557266a4a33ab51ad5d2a80d0">PublishQueueExt::withFileQueueSize</a></div><div class="ttdeci">PublishQueueExt &amp; withFileQueueSize(size_t size)</div><div class="ttdoc">Sets the file-based queue size (default is 100)</div><div class="ttdef"><b>Definition</b> PublishQueueExtRK.cpp:19</div></div>
 </div><!-- fragment --><h1>Dependencies</h1>
-<p>This library depends on two additional libraries:</p>
+<p>This library depends on an additional library:</p>
 <ul>
 <li><a href="https://github.com/rickkas7/SequentialFileRK">SequentialFileRK</a> manages the queue on the flash file system</li>
 </ul>
@@ -153,8 +158,13 @@ $(function() {
 <li><code>type</code> The <code>ContentType</code> of the data</li>
 </ul>
 <p>The data is written to a file on the file system before this call returns.</p>
-<p>Content Type Constant MIME Type Value ContentType::TEXT text/plain; charset=utf-8 0 ContentType::JPEG image/jpeg 22 ContentType::PNG image/png 23 ContentType::BINARY application/octet-stream 42 ContentType::STRUCTURED 65001</p>
-<h2>bool <a class="el" href="class_publish_queue_ext.html#a9030cdc4d59259aa514056534f546d43" title="Overload for publishing an event from a Variant.">PublishQueueExt::publish(const char * eventName, const Variant &amp;data)</a></h2>
+<div class="fragment"><div class="line">Content Type Constant    MIME Type                  Value</div>
+<div class="line">ContentType::TEXT        text/plain; charset=utf-8  0</div>
+<div class="line">ContentType::JPEG        image/jpeg                 22</div>
+<div class="line">ContentType::PNG         image/png                  23</div>
+<div class="line">ContentType::BINARY      application/octet-stream   42</div>
+<div class="line">ContentType::STRUCTURED                             65001</div>
+</div><!-- fragment --><h2>bool <a class="el" href="class_publish_queue_ext.html#a9030cdc4d59259aa514056534f546d43" title="Overload for publishing an event from a Variant.">PublishQueueExt::publish(const char * eventName, const Variant &amp;data)</a></h2>
 <p>This overload takes a <code>Variant</code> but not a <code>ContentType</code>. It should only be used when passing a <code>VariantMap</code> for structured data.</p>
 <div class="fragment"><div class="line">bool publish(const char *eventName, const Variant &amp;data);</div>
 </div><!-- fragment --><h3>Parameters</h3>
@@ -177,14 +187,15 @@ $(function() {
 <hr  />
 <h2>bool <a class="el" href="class_publish_queue_ext.html#a40539be5431fb4797dba65eddfbc73e2" title="Overload for publishing an event.">PublishQueueExt::publish(const char * eventName, const char * data)</a></h2>
 <p>Overload for publishing an event.</p>
-<div class="fragment"><div class="line">bool publish(const char * eventName, const char * data, PublishFlags flags1, PublishFlags flags2)</div>
+<div class="fragment"><div class="line">bool publish(const char * eventName, const char * data)</div>
 </div><!-- fragment --><h3>Parameters</h3>
 <ul>
 <li><code>eventName</code> The name of the event (63 character maximum).</li>
-<li><code>data</code> The event data (255 bytes maximum, 622 bytes in system firmware 0.8.0-rc.4 and later).</li>
+<li><code>data</code> The event data as UTF-8 text. Up to 1024 bytes depending on the Device OS version and device.</li>
 </ul>
 <h3>Returns</h3>
 <p>true if the event was queued or false if it was not.</p>
+<p>For larger data and typed data, use the overload that takes a <code>CloudEvent</code> or <code>Variant</code>.</p>
 <p>This function almost always returns true. If you queue more events than fit in the buffer the oldest (sometimes second oldest) is discarded.</p>
 <hr  />
 <h2>void <a class="el" href="class_publish_queue_ext.html#ac2a85caba851883ad131fe577ddd6acc" title="Empty the file based queue. Any queued events are discarded and the files deleted.">PublishQueueExt::clearQueues()</a></h2>
@@ -206,7 +217,7 @@ $(function() {
 <div class="fragment"><div class="line">bool getPausePublishing() const</div>
 </div><!-- fragment --> <hr  />
 <h2>bool <a class="el" href="class_publish_queue_ext.html#a41d836715f52f69367b2fbc32ac7f626" title="Determine if it&#39;s a good time to go to sleep.">PublishQueueExt::getCanSleep() const</a></h2>
-<p>Determine if it's a good time to go to sleep. Added in version 0.0.3.</p>
+<p>Determine if it's a good time to go to sleep.</p>
 <div class="fragment"><div class="line">bool getCanSleep() const</div>
 </div><!-- fragment --><p>If a publish is not in progress and the queue is empty, returns true.</p>
 <p>If pausePublishing is true, then return true if either the current publish has completed, or not cloud connected.</p>
@@ -230,6 +241,26 @@ $(function() {
 <p>Unlock the queue protection mutex.</p>
 <div class="fragment"><div class="line">void unlock()</div>
 </div><!-- fragment --><h1>Version History</h1>
+<h2>0.0.6 (2025-05-09)</h2>
+<ul>
+<li>Corrected sector size (is 4096 bytes not 512).</li>
+</ul>
+<h2>0.0.5 (2025-04-11)</h2>
+<ul>
+<li>Added support for withPublishCompleteUserCallback(). It was not previously implemented, though the call to set it was left over from PublishQueuePosixRK. The new prototype only has a CloudEvent object you can use the determine success or failure, the event name, or the event data.</li>
+</ul>
+<h2>0.0.4 (2025-04-08)</h2>
+<ul>
+<li>Fixed a bug where queue cleanup did not work properly and could also leave corrupted files in the queue if you exceeded the file queue size.</li>
+</ul>
+<h2>0.0.3 (2025-04-07)</h2>
+<ul>
+<li>Fixed a bug where if a queued file failed to publish (such as because of a connectivity issue), the file in the queue would be corrupted and would be discarded instead of retransmitted later.</li>
+</ul>
+<h2>0.0.2 (2025-03-24)</h2>
+<ul>
+<li>Moved 2-test-suite.cpp into the example directory. It as accidentally in the src directory.</li>
+</ul>
 <h2>0.0.1 (2025-02-19)</h2>
 <ul>
 <li>Initial version </li>
