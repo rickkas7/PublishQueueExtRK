@@ -22,7 +22,9 @@ enum {
 	TEST_PUBLISH_OFFLINE_RESET, // 6 go offline, publish some events, reset device, number is param0, optional size in param2
     TEST_CLEAR_QUEUES, // 7 clear RAM and file-based queues
     TEST_SET_FILE_QUEUE_LEN, // 8 set file queue length (param0 = length)
-	TEST_VARIANT_BINARY // 9 publish binary variant for TEST_PUBLISH_FAST, TEST_PUBLISH_OFFLINE, TEST_PUBLISH_OFFLINE_RESET
+	TEST_VARIANT_BINARY, // 9 publish binary variant for TEST_PUBLISH_FAST, TEST_PUBLISH_OFFLINE, TEST_PUBLISH_OFFLINE_RESET
+	TEST_EMPTY_DATA, // 10 publish with no data
+	TEST_CLEAR_SPECIAL_TEST // 11 clear special test mode such as TEST_EMPTY_DATA
 };
 
 // Example:
@@ -39,6 +41,7 @@ int intParam[MAX_PARAM];
 String stringParam[MAX_PARAM];
 size_t numParam;
 ContentType contentType = ContentType::TEXT;
+int specialTest = 0;
 
 int testHandler(String cmd);
 void publishCounter();
@@ -131,6 +134,11 @@ void publishCounter() {
 
 void publishPaddedCounter(int size) {
 
+	if (specialTest == TEST_EMPTY_DATA) {
+		PublishQueueExt::instance().publish("testEvent");
+		return;
+	}
+
 	size_t bufSize = size + 10;
 	char *buf = new char[bufSize];
 	snprintf(buf, bufSize - 1, "%05d", counter++);
@@ -204,11 +212,22 @@ int testHandler(String cmd) {
 	case TEST_VARIANT_BINARY:
 		Log.info("set binary publish mode");
 		contentType = ContentType::BINARY;
+		specialTest = tempTestNum;
 		break;
-		
+
+	case TEST_EMPTY_DATA: // 10
+		Log.info("set empty data mode");
+		specialTest = tempTestNum;
+		break;
+
+	case TEST_CLEAR_SPECIAL_TEST: // 11
+		Log.info("clear special test mode");
+		specialTest = 0;
+		break;
+
 	default:
 		Log.info("test %d", tempTestNum);
-		testNum = tempTestNum;
+		testNum = tempTestNum;		
 		break;
 	}
 

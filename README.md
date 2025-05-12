@@ -326,6 +326,11 @@ void unlock()
 
 ## Version History
 
+### 0.0.7 (2025-05-12)
+
+- Fixed bug when you have no event data.
+- Fixed a bug when non-structured, non-variant events could have garbage data at the end of the event data.
+
 ### 0.0.6 (2025-05-09)
 
 - Corrected sector size (is 4096 bytes not 512).

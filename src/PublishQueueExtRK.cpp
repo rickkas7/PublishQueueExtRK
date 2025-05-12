@@ -321,7 +321,7 @@ void PublishQueueExt::stateWaitEvent() {
             }
         }
 
-        if (isValid) {
+        if (isValid && trailer.dataSize != 0) {
             // Copy event data to temporary file
             int tempFd = open(tempFilePath, O_RDWR | O_CREAT | O_TRUNC);
             if (tempFd != -1) {
@@ -330,8 +330,8 @@ void PublishQueueExt::stateWaitEvent() {
                 if (copyBuf) {
                     lseek(fd, 0, SEEK_SET);
 
-                    for(size_t offset = 0; offset < fileSize; offset += copyBufSize) {
-                        size_t count = fileSize - offset;
+                    for(size_t offset = 0; offset < trailer.dataSize; offset += copyBufSize) {
+                        size_t count = trailer.dataSize - offset;
                         if (count > copyBufSize) {
                             count = copyBufSize;
                         }
@@ -365,7 +365,12 @@ void PublishQueueExt::stateWaitEvent() {
         }
 
         if (isValid) {
-            curEvent.loadData(tempFilePath.c_str());
+            if (trailer.dataSize != 0) {
+                curEvent.loadData(tempFilePath.c_str());
+            }
+            else {
+                _log.trace("no data in event %d", curFileNum);
+            }
         }
 
         if (metaJson) {
