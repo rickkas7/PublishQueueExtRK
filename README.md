@@ -326,6 +326,10 @@ void unlock()
 
 ## Version History
 
+### 0.0.8 (2025-05-20)
+
+- Removed unnecessary lock that could cause deadlock.
+
 ### 0.0.7 (2025-05-12)
 
 - Fixed bug when you have no event data.

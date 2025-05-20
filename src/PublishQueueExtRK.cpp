@@ -176,9 +176,7 @@ bool PublishQueueExt::publish(const char *eventName, const Variant &data, Conten
 
 
 void PublishQueueExt::clearQueues() {
-    WITH_LOCK(*this) {
-        fileQueue.removeAll(true);
-    }
+    fileQueue.removeAll(true);
 
     _log.trace("clearQueues");
 }
@@ -197,16 +195,14 @@ void PublishQueueExt::setPausePublishing(bool value) {
 
 
 void PublishQueueExt::checkQueueLimits() {
-    WITH_LOCK(*this) {
-        while(fileQueue.getQueueLen() > (int)fileQueueSize) {
-            int fileNum = fileQueue.removeSecondFileInQueue();
-            if (fileNum) {
-                fileQueue.removeFileNum(fileNum, false);
-                _log.info("discarded event %d", fileNum);
-            }
-            else {
-                break;
-            }
+    while(fileQueue.getQueueLen() > (int)fileQueueSize) {
+        int fileNum = fileQueue.removeSecondFileInQueue();
+        if (fileNum) {
+            fileQueue.removeFileNum(fileNum, false);
+            _log.info("discarded event %d", fileNum);
+        }
+        else {
+            break;
         }
     }
 }
@@ -214,9 +210,7 @@ void PublishQueueExt::checkQueueLimits() {
 size_t PublishQueueExt::getNumEvents() {
     size_t result = 0;
 
-    WITH_LOCK(*this) {
-        result = fileQueue.getQueueLen();
-    }
+    result = fileQueue.getQueueLen();
 
     return result;
 }
