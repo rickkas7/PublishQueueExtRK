@@ -195,7 +195,7 @@ void PublishQueueExt::setPausePublishing(bool value) {
 
 
 void PublishQueueExt::checkQueueLimits() {
-    while(fileQueue.getQueueLen() > (int)fileQueueSize) {
+    for(int tries = 0; tries < 3 && fileQueue.getQueueLen() > (int)fileQueueSize; tries++) {
         int fileNum = fileQueue.removeSecondFileInQueue();
         if (fileNum) {
             fileQueue.removeFileNum(fileNum, false);

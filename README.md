@@ -326,6 +326,10 @@ void unlock()
 
 ## Version History
 
+### 0.0.9 (2205-05-22)
+
+- Added a limit to the number of files to remove from the queue on checkQueueLimits
+
 ### 0.0.8 (2025-05-20)
 
 - Removed unnecessary lock that could cause deadlock.
