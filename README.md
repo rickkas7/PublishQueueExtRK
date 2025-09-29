@@ -326,6 +326,10 @@ void unlock()
 
 ## Version History
 
+### 0.0.10 (2025-09-29)
+
+- Updated to SequentialFileRK 0.0.4 to fix an issue that could cause file system corruption.
+
 ### 0.0.9 (2205-05-22)
 
 - Added a limit to the number of files to remove from the queue on checkQueueLimits
