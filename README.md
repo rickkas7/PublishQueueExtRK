@@ -54,6 +54,18 @@ This library depends on an additional library:
 
 - [SequentialFileRK](https://github.com/rickkas7/SequentialFileRK) manages the queue on the flash file system
 
+## Deferred delete
+
+This feature was added in version 0.0.11 and requires a confirmation before an event is deleted from the queue. This is typically used so a confirmation from the cloud triggers the confirmation. For example:
+
+- The device could respond to a hook-response event and only delete the event after the webhook is processed.
+- The device could respond to a function call made by an external service after the webhook is processed.
+
+The exact method is not prescribed by the library; you are free to implement your own technique for confirmation.
+
+Note that when using confirmation, you also have an increased possibility that you will get duplicate events. Putting a unique ID in the event data payload is a good idea to help detect duplicates.
+
+
 
 ## API
 
@@ -325,6 +337,10 @@ void unlock()
 ```
 
 ## Version History
+
+### 0.0.11 (2025-11-15)
+
+- Added support for deferred delete, which allows for confirmation the event was processed before deleting the event from the queue.
 
 ### 0.0.10 (2025-09-29)
 

@@ -173,6 +173,10 @@ bool PublishQueueExt::publish(const char *eventName, const Variant &data, Conten
     return publish(event);
 }
 
+void PublishQueueExt::confirmDelete(int id) {
+    
+}
+
 
 
 void PublishQueueExt::clearQueues() {
