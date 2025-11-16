@@ -210,6 +210,8 @@ public:
 
     /**
      * @brief Confirm that an event can be deleted when using withConfirmedDelete mode
+     * 
+     * Use withDeferredDelete() to enable deferred delete mode.
      */
     void confirmDelete();
 
@@ -337,6 +339,11 @@ protected:
      */
     void statePublishWait();
 
+    /**
+     * @brief State handler to wait for delete confirmation in deferred delete mode
+     * 
+     * Next state: stateWait
+     */
     void stateDeferredDelete();
 
     /**

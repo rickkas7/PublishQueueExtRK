@@ -105,7 +105,44 @@ $(function() {
 <ul>
 <li><a href="https://github.com/rickkas7/SequentialFileRK">SequentialFileRK</a> manages the queue on the flash file system</li>
 </ul>
-<h1>API</h1>
+<h1>Deferred delete</h1>
+<p>This feature was added in version 0.0.11 and requires a confirmation before an event is deleted from the queue. This is typically used so a confirmation from the cloud triggers the confirmation. For example:</p>
+<ul>
+<li>The device could respond to a hook-response event and only delete the event after the webhook is processed.</li>
+<li>The device could respond to a function call made by an external service after the webhook is processed.</li>
+</ul>
+<p>The exact method is not prescribed by the library; you are free to implement your own technique for confirmation.</p>
+<p>Note that when using confirmation, you also have an increased possibility that you will get duplicate events. Putting a unique ID in the event data payload is a good idea to help detect duplicates.</p>
+<p>Example 3-confirmed-delete shows how to use this feature with webhook hook-response. Be sure you set your response topic to:</p>
+<div class="fragment"><div class="line">{{PARTICLE_DEVICE_ID}}/hook-response/{{PARTICLE_EVENT_NAME}}</div>
+</div><!-- fragment --><p>A successful log with trace logging enabling will look like this:</p>
+<div class="fragment"><div class="line">0000480076 [app.pubq] TRACE: saved event to fileNum 6</div>
+<div class="line">0000480130 [app.pubq] TRACE: saved meta dataSize=18 metaSize=51 {&quot;content-type&quot;:65001,&quot;name&quot;:&quot;testConfirmedDelete&quot;} </div>
+<div class="line">0000480131 [app.seqfile] TRACE: getFileFromQueue returned 6</div>
+<div class="line">0000480135 [app.pubq] TRACE: reading fileNum=6 fileSize=81</div>
+<div class="line">0000480189 [app.pubq] TRACE: read event 6 from queue size=18</div>
+<div class="line">0000480190 [app.pubq] TRACE: publishing fileNum=6 event=testConfirmedDelete</div>
+<div class="line">0000480736 [app.pubq] TRACE: publish success, delete deferred 6</div>
+<div class="line">0000483529 [app.pubq] TRACE: confirmDelete</div>
+<div class="line">0000483531 [app.pubq] TRACE: publish delete confirmed 6</div>
+<div class="line">0000483531 [app.seqfile] TRACE: getFileFromQueue returned 6</div>
+<div class="line">0000483531 [app.seqfile] TRACE: getFileFromQueue returned 6</div>
+<div class="line">0000483558 [app.seqfile] TRACE: removed /usr/pubqueue2/00000006.pq</div>
+</div><!-- fragment --><p>If a confirmation is not received, it will look like this:</p>
+<div class="fragment"><div class="line">0000840076 [app.pubq] TRACE: saved event to fileNum 9</div>
+<div class="line">0000840133 [app.pubq] TRACE: saved meta dataSize=18 metaSize=51 {&quot;content-type&quot;:65001,&quot;name&quot;:&quot;testConfirmedDelete&quot;} </div>
+<div class="line">0000840134 [app.seqfile] TRACE: getFileFromQueue returned 9</div>
+<div class="line">0000840137 [app.pubq] TRACE: reading fileNum=9 fileSize=81</div>
+<div class="line">0000840190 [app.pubq] TRACE: read event 9 from queue size=18</div>
+<div class="line">0000840191 [app.pubq] TRACE: publishing fileNum=9 event=testConfirmedDelete</div>
+<div class="line">0000841687 [app.pubq] TRACE: publish success, delete deferred 9</div>
+<div class="line">0000901688 [app.pubq] TRACE: publish delete not confirmed 9 (retrying)</div>
+<div class="line">0000931688 [app.seqfile] TRACE: getFileFromQueue returned 9</div>
+<div class="line">0000931691 [app.pubq] TRACE: reading fileNum=9 fileSize=81</div>
+<div class="line">0000931746 [app.pubq] TRACE: read event 9 from queue size=18</div>
+<div class="line">0000931746 [app.pubq] TRACE: publishing fileNum=9 event=testConfirmedDelete</div>
+<div class="line">0000932640 [app.pubq] TRACE: publish success, delete deferred 9</div>
+</div><!-- fragment --><h1>API</h1>
 <hr  />
 <h2>void <a class="el" href="class_publish_queue_ext.html#aff151cce8ada685b1e2d34e24d83906b" title="You must call this from setup() to initialize this library.">PublishQueueExt::setup()</a></h2>
 <p>You must call this from setup() to initialize this library.</p>
@@ -241,6 +278,27 @@ $(function() {
 <p>Unlock the queue protection mutex.</p>
 <div class="fragment"><div class="line">void unlock()</div>
 </div><!-- fragment --><h1>Version History</h1>
+<h2>0.0.11 (2025-11-15)</h2>
+<ul>
+<li>Added support for deferred delete, which allows for confirmation the event was processed before deleting the event from the queue.</li>
+</ul>
+<h2>0.0.10 (2025-09-29)</h2>
+<ul>
+<li>Updated to SequentialFileRK 0.0.4 to fix an issue that could cause file system corruption.</li>
+</ul>
+<h2>0.0.9 (2205-05-22)</h2>
+<ul>
+<li>Added a limit to the number of files to remove from the queue on checkQueueLimits</li>
+</ul>
+<h2>0.0.8 (2025-05-20)</h2>
+<ul>
+<li>Removed unnecessary lock that could cause deadlock.</li>
+</ul>
+<h2>0.0.7 (2025-05-12)</h2>
+<ul>
+<li>Fixed bug when you have no event data.</li>
+<li>Fixed a bug when non-structured, non-variant events could have garbage data at the end of the event data.</li>
+</ul>
 <h2>0.0.6 (2025-05-09)</h2>
 <ul>
 <li>Corrected sector size (is 4096 bytes not 512).</li>

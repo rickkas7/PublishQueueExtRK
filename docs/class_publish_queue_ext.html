@@ -112,6 +112,12 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><b>getFileQueueSize</b
 <tr class="memitem:a076c74a202967ed8d7560508373e7873" id="r_a076c74a202967ed8d7560508373e7873"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a076c74a202967ed8d7560508373e7873">withPublishCompleteUserCallback</a> (std::function&lt; void(const CloudEvent &amp;event)&gt; cb)</td></tr>
 <tr class="memdesc:a076c74a202967ed8d7560508373e7873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a callback function to call with publish is complete.  <br /></td></tr>
 <tr class="separator:a076c74a202967ed8d7560508373e7873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2db4d830e2c6f1cc2df390a00bb47d9c" id="r_a2db4d830e2c6f1cc2df390a00bb47d9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2db4d830e2c6f1cc2df390a00bb47d9c">withDeferredDelete</a> (bool enable=true)</td></tr>
+<tr class="memdesc:a2db4d830e2c6f1cc2df390a00bb47d9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable deferred delete mode, typically used for a cloud-based confirmation that the event was processed.  <br /></td></tr>
+<tr class="separator:a2db4d830e2c6f1cc2df390a00bb47d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a694cffe0b317457fab40703dc6ae5158" id="r_a694cffe0b317457fab40703dc6ae5158"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a694cffe0b317457fab40703dc6ae5158">withDeferredDeleteTimeout</a> (unsigned long milliseconds)</td></tr>
+<tr class="memdesc:a694cffe0b317457fab40703dc6ae5158"><td class="mdescLeft">&#160;</td><td class="mdescRight">How long to wait for a delete confirmation before publishing again (default is 60 seconds)  <br /></td></tr>
+<tr class="separator:a694cffe0b317457fab40703dc6ae5158"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff151cce8ada685b1e2d34e24d83906b" id="r_aff151cce8ada685b1e2d34e24d83906b"><td class="memItemLeft" align="right" valign="top"><a id="aff151cce8ada685b1e2d34e24d83906b" name="aff151cce8ada685b1e2d34e24d83906b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> ()</td></tr>
 <tr class="memdesc:aff151cce8ada685b1e2d34e24d83906b"><td class="mdescLeft">&#160;</td><td class="mdescRight">You must call this from <a class="el" href="#aff151cce8ada685b1e2d34e24d83906b" title="You must call this from setup() to initialize this library.">setup()</a> to initialize this library. <br /></td></tr>
@@ -135,6 +141,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>loop</b> ()</td></tr>
 <tr class="memitem:ade52d7bc6df525c3fbf576740d6b92e2" id="r_ade52d7bc6df525c3fbf576740d6b92e2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade52d7bc6df525c3fbf576740d6b92e2">publish</a> (const char *eventName, const Variant &amp;data, ContentType type)</td></tr>
 <tr class="memdesc:ade52d7bc6df525c3fbf576740d6b92e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload for publishing an event with a Variant and ContentType.  <br /></td></tr>
 <tr class="separator:ade52d7bc6df525c3fbf576740d6b92e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf847a91e58cf8b5a73647409ba38e89" id="r_aaf847a91e58cf8b5a73647409ba38e89"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf847a91e58cf8b5a73647409ba38e89">confirmDelete</a> ()</td></tr>
+<tr class="memdesc:aaf847a91e58cf8b5a73647409ba38e89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Confirm that an event can be deleted when using withConfirmedDelete mode.  <br /></td></tr>
+<tr class="separator:aaf847a91e58cf8b5a73647409ba38e89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2a85caba851883ad131fe577ddd6acc" id="r_ac2a85caba851883ad131fe577ddd6acc"><td class="memItemLeft" align="right" valign="top"><a id="ac2a85caba851883ad131fe577ddd6acc" name="ac2a85caba851883ad131fe577ddd6acc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>clearQueues</b> ()</td></tr>
 <tr class="memdesc:ac2a85caba851883ad131fe577ddd6acc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty the file based queue. Any queued events are discarded and the files deleted. <br /></td></tr>
@@ -210,6 +219,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteCurEvent</b> ()
 <tr class="memitem:a98354b124f4b5ee21ceb3aa8a8f9d329" id="r_a98354b124f4b5ee21ceb3aa8a8f9d329"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a98354b124f4b5ee21ceb3aa8a8f9d329">statePublishWait</a> ()</td></tr>
 <tr class="memdesc:a98354b124f4b5ee21ceb3aa8a8f9d329"><td class="mdescLeft">&#160;</td><td class="mdescRight">State handler for waiting for publish to complete.  <br /></td></tr>
 <tr class="separator:a98354b124f4b5ee21ceb3aa8a8f9d329"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ae774656504169e8ede534bf83039a3" id="r_a5ae774656504169e8ede534bf83039a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ae774656504169e8ede534bf83039a3">stateDeferredDelete</a> ()</td></tr>
+<tr class="memdesc:a5ae774656504169e8ede534bf83039a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">State handler to wait for delete confirmation in deferred delete mode.  <br /></td></tr>
+<tr class="separator:a5ae774656504169e8ede534bf83039a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -257,6 +269,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>pausePublishing</b> =
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>canSleep</b> = false</td></tr>
 <tr class="memdesc:a2d584da8e902a147999d76ce9e678dd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true if this is a good time to go to sleep <br /></td></tr>
 <tr class="separator:a2d584da8e902a147999d76ce9e678dd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a524320221e24c86832a26010593af0b8" id="r_a524320221e24c86832a26010593af0b8"><td class="memItemLeft" align="right" valign="top"><a id="a524320221e24c86832a26010593af0b8" name="a524320221e24c86832a26010593af0b8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>deferredDelete</b> = false</td></tr>
+<tr class="memdesc:a524320221e24c86832a26010593af0b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if deferred delete mode is enabled <br /></td></tr>
+<tr class="separator:a524320221e24c86832a26010593af0b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcaf3636b54671a975236738891a0cc6" id="r_abcaf3636b54671a975236738891a0cc6"><td class="memItemLeft" align="right" valign="top"><a id="abcaf3636b54671a975236738891a0cc6" name="abcaf3636b54671a975236738891a0cc6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>deleteConfirmed</b> = false</td></tr>
+<tr class="memdesc:abcaf3636b54671a975236738891a0cc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if the delete has been confirmed <br /></td></tr>
+<tr class="separator:abcaf3636b54671a975236738891a0cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d0c78692b3b1be99d339519a4334de2" id="r_a8d0c78692b3b1be99d339519a4334de2"><td class="memItemLeft" align="right" valign="top"><a id="a8d0c78692b3b1be99d339519a4334de2" name="a8d0c78692b3b1be99d339519a4334de2"></a>
 unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>waitAfterConnect</b> = 500</td></tr>
 <tr class="memdesc:a8d0c78692b3b1be99d339519a4334de2"><td class="mdescLeft">&#160;</td><td class="mdescRight">time to wait after Particle.connected() before publishing <br /></td></tr>
@@ -269,6 +289,10 @@ unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>waitBetweenP
 unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>waitAfterFailure</b> = 30000</td></tr>
 <tr class="memdesc:a00f45886f0bbd0212df5113d2188b395"><td class="mdescLeft">&#160;</td><td class="mdescRight">how long to wait after failing to publish before trying again <br /></td></tr>
 <tr class="separator:a00f45886f0bbd0212df5113d2188b395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a522719fef19353b0dddca8a116726ff1" id="r_a522719fef19353b0dddca8a116726ff1"><td class="memItemLeft" align="right" valign="top"><a id="a522719fef19353b0dddca8a116726ff1" name="a522719fef19353b0dddca8a116726ff1"></a>
+unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>deferredDeleteTimeout</b> = 60000</td></tr>
+<tr class="memdesc:a522719fef19353b0dddca8a116726ff1"><td class="mdescLeft">&#160;</td><td class="mdescRight">how long to wait for a delete confirmation before publishing again <br /></td></tr>
+<tr class="separator:a522719fef19353b0dddca8a116726ff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60cc98efedc05f404ab034d2fb226cf0" id="r_a60cc98efedc05f404ab034d2fb226cf0"><td class="memItemLeft" align="right" valign="top"><a id="a60cc98efedc05f404ab034d2fb226cf0" name="a60cc98efedc05f404ab034d2fb226cf0"></a>
 std::function&lt; void(const CloudEvent &amp;event)&#160;</td><td class="memItemRight" valign="bottom"><b>publishCompleteUserCallback</b> ) = 0</td></tr>
 <tr class="memdesc:a60cc98efedc05f404ab034d2fb226cf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">User callback for publish complete. <br /></td></tr>
@@ -345,6 +369,26 @@ static <a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> *&#
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="aaf847a91e58cf8b5a73647409ba38e89" name="aaf847a91e58cf8b5a73647409ba38e89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf847a91e58cf8b5a73647409ba38e89">&#9670;&#160;</a></span>confirmDelete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PublishQueueExt::confirmDelete </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Confirm that an event can be deleted when using withConfirmedDelete mode. </p>
+<p>Use <a class="el" href="#a2db4d830e2c6f1cc2df390a00bb47d9c" title="Enable deferred delete mode, typically used for a cloud-based confirmation that the event was process...">withDeferredDelete()</a> to enable deferred delete mode. </p>
+
+</div>
+</div>
 <a id="a41d836715f52f69367b2fbc32ac7f626" name="a41d836715f52f69367b2fbc32ac7f626"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a41d836715f52f69367b2fbc32ac7f626">&#9670;&#160;</a></span>getCanSleep()</h2>
 
@@ -693,6 +737,34 @@ false </dd></dl>
 
 </div>
 </div>
+<a id="a5ae774656504169e8ede534bf83039a3" name="a5ae774656504169e8ede534bf83039a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ae774656504169e8ede534bf83039a3">&#9670;&#160;</a></span>stateDeferredDelete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PublishQueueExt::stateDeferredDelete </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>State handler to wait for delete confirmation in deferred delete mode. </p>
+<p>Next state: stateWait </p>
+
+</div>
+</div>
 <a id="a98354b124f4b5ee21ceb3aa8a8f9d329" name="a98354b124f4b5ee21ceb3aa8a8f9d329"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98354b124f4b5ee21ceb3aa8a8f9d329">&#9670;&#160;</a></span>statePublishWait()</h2>
 
@@ -747,6 +819,75 @@ false </dd></dl>
 <p>State handler for waiting for an event. </p>
 <p>stateTime and durationMs determine whether to stay in this state waiting, or whether to publish and go into statePublishWait.</p>
 <p>Next state: stateWaitRateLimit or stateConnectWait </p>
+
+</div>
+</div>
+<a id="a2db4d830e2c6f1cc2df390a00bb47d9c" name="a2db4d830e2c6f1cc2df390a00bb47d9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2db4d830e2c6f1cc2df390a00bb47d9c">&#9670;&#160;</a></span>withDeferredDelete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp; PublishQueueExt::withDeferredDelete </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>enable</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enable deferred delete mode, typically used for a cloud-based confirmation that the event was processed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enable</td><td>true to enable deferred delete. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_publish_queue_ext.html" title="Class for asynchronous publishing of events.">PublishQueueExt</a>&amp; </dd></dl>
+
+</div>
+</div>
+<a id="a694cffe0b317457fab40703dc6ae5158" name="a694cffe0b317457fab40703dc6ae5158"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a694cffe0b317457fab40703dc6ae5158">&#9670;&#160;</a></span>withDeferredDeleteTimeout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_publish_queue_ext.html">PublishQueueExt</a> &amp; PublishQueueExt::withDeferredDeleteTimeout </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long</td>          <td class="paramname"><span class="paramname"><em>milliseconds</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>How long to wait for a delete confirmation before publishing again (default is 60 seconds) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">milliseconds</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_publish_queue_ext.html" title="Class for asynchronous publishing of events.">PublishQueueExt</a>&amp;</dd></dl>
+<p>The timeout is set based on CoAP retransmission timeouts (20 sec x 2) + webhook timeout (20 seconds). This should not be set too low, because if the server stops responding, this library will keep retrying retransmission, which can cause a large number of data operations. </p>
 
 </div>
 </div>
