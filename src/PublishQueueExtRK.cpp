@@ -173,10 +173,10 @@ bool PublishQueueExt::publish(const char *eventName, const Variant &data, Conten
     return publish(event);
 }
 
-void PublishQueueExt::confirmDelete(int id) {
-    
+void PublishQueueExt::confirmDelete() {
+    deleteConfirmed = true;    
+    _log.trace("confirmDelete");
 }
-
 
 
 void PublishQueueExt::clearQueues() {
@@ -404,6 +404,7 @@ void PublishQueueExt::stateWaitEvent() {
         return;
     }
 
+    deleteConfirmed = false;
 
     // This message is monitored by the automated test tool. If you edit this, change that too.
     _log.trace("publishing fileNum=%d event=%s", curFileNum, curEvent.name());
@@ -448,7 +449,15 @@ void PublishQueueExt::statePublishWait() {
     }
     else
     if (curEvent.isSent()) {
+
+        if (deferredDelete) {
+            _log.trace("publish success, delete deferred %d", curFileNum);
+            stateHandler = &PublishQueueExt::stateDeferredDelete;
+            stateTime = millis();
+            return;
+        }
         _log.trace("publish success %d", curFileNum);
+
         deleteCurEvent();
         durationMs = waitBetweenPublish;
     }
@@ -456,6 +465,29 @@ void PublishQueueExt::statePublishWait() {
         _log.trace("publish failed %d (retrying)", curFileNum);
         curFileNum = 0;
         durationMs = waitAfterFailure;
+    }
+
+    stateHandler = &PublishQueueExt::stateWaitEvent;
+    stateTime = millis();
+}
+
+void PublishQueueExt::stateDeferredDelete() {
+    if (millis() - stateTime >= deferredDeleteTimeout) {
+        // Timeout waiting for confirmation
+        _log.trace("publish delete not confirmed %d (retrying)", curFileNum);
+        curFileNum = 0;
+        durationMs = waitAfterFailure;
+    }
+    else
+    if (!deleteConfirmed) {
+        // Continue to wait in this state
+        return;
+    }
+    else {
+        // Delete and publish next
+        _log.trace("publish delete confirmed %d", curFileNum);
+        deleteCurEvent();
+        durationMs = waitBetweenPublish;
     }
 
     stateHandler = &PublishQueueExt::stateWaitEvent;
