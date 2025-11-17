@@ -32,6 +32,7 @@ public:
         uint16_t reserved; //!< not used, set to 0
     };
 
+
     static const uint32_t kQueueFileTrailerMagic = 0x55fcab58; //!< Magic bytes stored in the QueueFileTrailer structure
 
     /**
@@ -100,6 +101,26 @@ public:
      */
     PublishQueueExt &withPublishCompleteUserCallback(std::function<void(const CloudEvent &event)> cb) { publishCompleteUserCallback = cb; return *this; };
 
+    /**
+     * @brief Enable deferred delete mode, typically used for a cloud-based confirmation that the event was processed
+     * 
+     * @param enable true to enable deferred delete.
+     * @return PublishQueueExt& 
+     */
+    PublishQueueExt &withDeferredDelete(bool enable = true) { deferredDelete = enable; return *this; };
+
+    /**
+     * @brief How long to wait for a delete confirmation before publishing again (default is 60 seconds)
+     * 
+     * @param milliseconds 
+     * @return PublishQueueExt& 
+     * 
+     * The timeout is set based on CoAP retransmission timeouts (20 sec x 2) + webhook timeout (20 seconds). This should
+     * not be set too low, because if the server stops responding, this library will keep retrying retransmission, which
+     * can cause a large number of data operations.
+     */
+    PublishQueueExt &withDeferredDeleteTimeout(unsigned long milliseconds) { deferredDeleteTimeout = milliseconds; return *this; };
+    
 
     /**
      * @brief You must call this from setup() to initialize this library
@@ -186,6 +207,13 @@ public:
      * ContentType::STRUCTURED                             65001
 	 */
     bool publish(const char *eventName, const Variant &data, ContentType type);
+
+    /**
+     * @brief Confirm that an event can be deleted when using withConfirmedDelete mode
+     * 
+     * Use withDeferredDelete() to enable deferred delete mode.
+     */
+    void confirmDelete();
 
 
     /**
@@ -312,6 +340,13 @@ protected:
     void statePublishWait();
 
     /**
+     * @brief State handler to wait for delete confirmation in deferred delete mode
+     * 
+     * Next state: stateWait
+     */
+    void stateDeferredDelete();
+
+    /**
      * @brief SequentialFileRK library object for maintaining the queue of files on the POSIX file system
      */
     SequentialFile fileQueue;
@@ -333,9 +368,13 @@ protected:
     bool pausePublishing = false; //!< flag to pause publishing (used from automated test)
     bool canSleep = false; //!< returns true if this is a good time to go to sleep
 
+    bool deferredDelete = false; //!< true if deferred delete mode is enabled
+    bool deleteConfirmed = false; //!< true if the delete has been confirmed
+
     unsigned long waitAfterConnect = 500; //!< time to wait after Particle.connected() before publishing
     unsigned long waitBetweenPublish = 10; //!< how long to wait in milliseconds between publishes
     unsigned long waitAfterFailure = 30000; //!< how long to wait after failing to publish before trying again
+    unsigned long deferredDeleteTimeout = 60000; //!< how long to wait for a delete confirmation before publishing again
 
     std::function<void(const CloudEvent &event)> publishCompleteUserCallback = 0; //!< User callback for publish complete
 

@@ -54,6 +54,57 @@ This library depends on an additional library:
 
 - [SequentialFileRK](https://github.com/rickkas7/SequentialFileRK) manages the queue on the flash file system
 
+## Deferred delete
+
+This feature was added in version 0.0.11 and requires a confirmation before an event is deleted from the queue. This is typically used so a confirmation from the cloud triggers the confirmation. For example:
+
+- The device could respond to a hook-response event and only delete the event after the webhook is processed.
+- The device could respond to a function call made by an external service after the webhook is processed.
+
+The exact method is not prescribed by the library; you are free to implement your own technique for confirmation.
+
+Note that when using confirmation, you also have an increased possibility that you will get duplicate events. Putting a unique ID in the event data payload is a good idea to help detect duplicates.
+
+Example 3-confirmed-delete shows how to use this feature with webhook hook-response. Be sure you set your response topic to:
+
+```
+{{PARTICLE_DEVICE_ID}}/hook-response/{{PARTICLE_EVENT_NAME}}
+```
+
+A successful log with trace logging enabling will look like this:
+
+```
+0000480076 [app.pubq] TRACE: saved event to fileNum 6
+0000480130 [app.pubq] TRACE: saved meta dataSize=18 metaSize=51 {"content-type":65001,"name":"testConfirmedDelete"} 
+0000480131 [app.seqfile] TRACE: getFileFromQueue returned 6
+0000480135 [app.pubq] TRACE: reading fileNum=6 fileSize=81
+0000480189 [app.pubq] TRACE: read event 6 from queue size=18
+0000480190 [app.pubq] TRACE: publishing fileNum=6 event=testConfirmedDelete
+0000480736 [app.pubq] TRACE: publish success, delete deferred 6
+0000483529 [app.pubq] TRACE: confirmDelete
+0000483531 [app.pubq] TRACE: publish delete confirmed 6
+0000483531 [app.seqfile] TRACE: getFileFromQueue returned 6
+0000483531 [app.seqfile] TRACE: getFileFromQueue returned 6
+0000483558 [app.seqfile] TRACE: removed /usr/pubqueue2/00000006.pq
+```
+
+If a confirmation is not received, it will look like this:
+
+```
+0000840076 [app.pubq] TRACE: saved event to fileNum 9
+0000840133 [app.pubq] TRACE: saved meta dataSize=18 metaSize=51 {"content-type":65001,"name":"testConfirmedDelete"} 
+0000840134 [app.seqfile] TRACE: getFileFromQueue returned 9
+0000840137 [app.pubq] TRACE: reading fileNum=9 fileSize=81
+0000840190 [app.pubq] TRACE: read event 9 from queue size=18
+0000840191 [app.pubq] TRACE: publishing fileNum=9 event=testConfirmedDelete
+0000841687 [app.pubq] TRACE: publish success, delete deferred 9
+0000901688 [app.pubq] TRACE: publish delete not confirmed 9 (retrying)
+0000931688 [app.seqfile] TRACE: getFileFromQueue returned 9
+0000931691 [app.pubq] TRACE: reading fileNum=9 fileSize=81
+0000931746 [app.pubq] TRACE: read event 9 from queue size=18
+0000931746 [app.pubq] TRACE: publishing fileNum=9 event=testConfirmedDelete
+0000932640 [app.pubq] TRACE: publish success, delete deferred 9
+```
 
 ## API
 
@@ -325,6 +376,10 @@ void unlock()
 ```
 
 ## Version History
+
+### 0.0.11 (2025-11-15)
+
+- Added support for deferred delete, which allows for confirmation the event was processed before deleting the event from the queue.
 
 ### 0.0.10 (2025-09-29)
 
