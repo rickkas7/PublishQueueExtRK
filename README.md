@@ -29,7 +29,7 @@ PublishQueueExt::instance().setup();
 And this from loop:
 
 ```cpp
-PublishQueueExt::instance().setup();
+PublishQueueExt::instance().loop();
 ```
 
 To publish you do something like this:
